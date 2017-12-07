@@ -1,21 +1,50 @@
 package com.fast87;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class StringCalculator {
     int add (String text){
-        String[] strs;
+        if (isBlank(text)) return 0;
+
+        return sum(toInts(split(text)));
+    }
+
+    private boolean isBlank(String text) {
+        return (text == null || text.isEmpty());
+    }
+
+    private String[] split(String text) {
+        Matcher m = Pattern.compile("//(.)\n(.*)").matcher(text);
+        if (m.find()){
+            String customDelimeter = m.group(1);
+            return m.group(2).split(customDelimeter);
+        }
+        return text.split(",|:");
+    }
+
+    private int[] toInts(String[] value) {
+        int cntValue = value.length;
+        int[] numbers = new int[cntValue];
+        for(int i = 0 ; i<cntValue; i++){
+            numbers[i] = toPositive(value[i]);
+        }
+        return numbers;
+    }
+
+    private int toPositive(String value) {
+        int number = Integer.parseInt(value);
+        if(number<0){
+            throw new RuntimeException();
+        }
+        return number;
+    }
+
+    private int sum(int[] numbers) {
         int sum = 0;
-
-        if(text == null)
-            return 0;
-        if(text.isEmpty())
-            return 0;
-
-        strs = text.split(",|:");
-
-        for (String s: strs)
-            sum+=Integer.parseInt(s);
-
-
+        for (int number : numbers) {
+            sum += number;
+        }
         return sum;
     }
 }
